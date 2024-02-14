@@ -1,0 +1,9 @@
+.optionButton {
+    width: 100px;
+    padding: 0 10px 0 10px;
+}
+
+.optionButton:hover {
+    background-color:grey;
+    color: #fff;
+}
