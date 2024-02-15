@@ -3,28 +3,18 @@ import Description from "../Description/Description";
 import Options from "../Options/Options";
 import Feedback from "../Feedback/Feedback";
 import Notification from "../Notification/Notification";
-import css from './App.module.css'
+import css from './App.module.css';
 
 export default function App() {
+    const initialState = {
+        good: 0,
+        neutral: 0,
+        bad: 0
+    };
+
     const [options, setOptions] = useState(() => {
         const savedClicks = window.localStorage.getItem("saved-clicks");
-        if (savedClicks !== null) {
-            try {
-                return JSON.parse(savedClicks); // Parse JSON string
-            } catch (error) {
-                console.error("Error parsing saved data from localStorage:", error);
-                return {
-                    good: 0,
-                    neutral: 0,
-                    bad: 0
-                };
-            }
-        }
-        return {
-            good: 0,
-            neutral: 0,
-            bad: 0
-        };
+        return savedClicks ? JSON.parse(savedClicks) : initialState;
     });
 
     useEffect(() => {
@@ -39,26 +29,21 @@ export default function App() {
     };
 
     const resetFeedback = () => {
-        setOptions({
-            good: 0,
-            neutral: 0,
-            bad: 0
-        });
+        setOptions(initialState);
     };
 
     const totalFeedback = options.good + options.neutral + options.bad;
     const hasFeedback = totalFeedback > 0;
-    const positiveFeedback = Math.round(((options.good + options.neutral) / totalFeedback) * 100);
+    const positiveFeedback = Math.round((totalFeedback > 0 ? ((options.good + options.neutral) / totalFeedback) * 100 : 0));
 
     return (
-            <div>
+        <div>
             <Description />
-            
             <div className={css.optionContainer}>
-            <Options onTrack={() => updateFeedback('good')}> Good</Options>
-            <Options onTrack={() => updateFeedback('neutral')}>Neutral</Options>
-            <Options onTrack={() => updateFeedback('bad')}>Bad</Options>
-            {hasFeedback && <Options onTrack={resetFeedback}>Reset</Options>}
+                <Options onTrack={updateFeedback} feedbackType="good"> Good</Options>
+                <Options onTrack={updateFeedback} feedbackType="neutral">Neutral</Options>
+                <Options onTrack={updateFeedback} feedbackType="bad">Bad</Options>
+                {hasFeedback && <Options onTrack={resetFeedback}>Reset</Options>}
             </div>
 
             {hasFeedback ? (
@@ -72,7 +57,6 @@ export default function App() {
             ) : (
                 <Notification>No feedback collected yet</Notification>
             )}
-
-            </div>
+        </div>
     );
 }
