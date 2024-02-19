@@ -12,48 +12,42 @@ export default function App() {
         bad: 0
     };
 
-    const [options, setOptions] = useState(() => {
-        const savedClicks = window.localStorage.getItem("saved-clicks");
-        return savedClicks ? JSON.parse(savedClicks) : initialState;
+    const [feedback, setFeedback] = useState(() => {
+        const savedFeedback = window.localStorage.getItem("saved-feedback");
+        return savedFeedback ? JSON.parse(savedFeedback) : initialState;
     });
 
     useEffect(() => {
-        window.localStorage.setItem("saved-clicks", JSON.stringify(options));
-    }, [options]);
+        window.localStorage.setItem("saved-feedback", JSON.stringify(feedback));
+    }, [feedback]);
 
     const updateFeedback = (feedbackType) => {
-        setOptions({
-            ...options,
-            [feedbackType]: options[feedbackType] + 1,
+        setFeedback({
+            ...feedback,
+            [feedbackType]: feedback[feedbackType] + 1,
         });
     };
 
     const resetFeedback = () => {
-        setOptions(initialState);
+        setFeedback(initialState);
     };
 
-    const totalFeedback = options.good + options.neutral + options.bad;
+    const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
     const hasFeedback = totalFeedback > 0;
-    const positiveFeedback = Math.round((totalFeedback > 0 ? ((options.good + options.neutral) / totalFeedback) * 100 : 0));
+    const positiveFeedback = Math.round((totalFeedback > 0 ? ((feedback.good + feedback.neutral) / totalFeedback) * 100 : 0));
 
     return (
         <div>
             <Description />
             <div className={css.optionContainer}>
-                <Options onTrack={updateFeedback} feedbackType="good"> Good</Options>
-                <Options onTrack={updateFeedback} feedbackType="neutral">Neutral</Options>
-                <Options onTrack={updateFeedback} feedbackType="bad">Bad</Options>
-                {hasFeedback && <Options onTrack={resetFeedback}>Reset</Options>}
+                <Options onFeedbackClick={updateFeedback} feedbackType="good"> Good</Options>
+                <Options onFeedbackClick={updateFeedback} feedbackType="neutral">Neutral</Options>
+                <Options onFeedbackClick={updateFeedback} feedbackType="bad">Bad</Options>
+                {hasFeedback && <Options onFeedbackClick={resetFeedback} feedbackType="reset">Reset</Options>}
             </div>
 
             {hasFeedback ? (
-                <>
-                    <Feedback value={options.good}>Good</Feedback>
-                    <Feedback value={options.neutral}>Neutral</Feedback>
-                    <Feedback value={options.bad}>Bad</Feedback>
-                    <Feedback value={totalFeedback}>Total</Feedback>
-                    <Feedback value={positiveFeedback}>Positive</Feedback>
-                </>
+                    <Feedback {...feedback} total={totalFeedback} positivePercentage={positiveFeedback}></Feedback> 
             ) : (
                 <Notification>No feedback collected yet</Notification>
             )}

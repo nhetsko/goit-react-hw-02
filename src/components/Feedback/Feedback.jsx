@@ -1,7 +1,11 @@
-export default function Feedback({value, children}) {
+export default function Feedback({ good, neutral, bad, total, positivePercentage }) {
     return (
         <div>
-        <p>{children}: {value} </p>
+            <p>Good: {good}</p>
+            <p>Neutral: {neutral}</p>
+            <p>Bad: {bad}</p>
+            <p>Total: {total}</p>
+            <p>Positive: {positivePercentage}%</p>
         </div>
-    )
+    );
 }

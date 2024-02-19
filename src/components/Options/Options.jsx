@@ -1,11 +1,17 @@
 import css from './Option.module.css';
 
-export default function Options({ onTrack, feedbackType, children }) {
+export default function Options({ onFeedbackClick, feedbackType, children }) {
     return (
         <div>
-            <button className={css.optionButton} onClick={() => onTrack(feedbackType)}>
-                {children}
-            </button>
+            {feedbackType === "reset" ? (
+                <button className={css.optionButton} onClick={onFeedbackClick}>
+                    {children}
+                </button>
+            ) : (
+                <button className={css.optionButton} onClick={() => onFeedbackClick(feedbackType)}>
+                    {children}
+                </button>
+            )}
         </div>
     );
 }
