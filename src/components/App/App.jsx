@@ -40,10 +40,11 @@ export default function App() {
         <div>
             <Description />
             <div className={css.optionContainer}>
-                <Options onFeedbackClick={updateFeedback} feedbackType="good"> Good</Options>
-                <Options onFeedbackClick={updateFeedback} feedbackType="neutral">Neutral</Options>
-                <Options onFeedbackClick={updateFeedback} feedbackType="bad">Bad</Options>
-                {hasFeedback && <Options onFeedbackClick={resetFeedback} feedbackType="reset">Reset</Options>}
+                <Options
+          feedbackType={updateFeedback}
+          onReset={resetFeedback}
+          isReset={hasFeedback}
+        />
             </div>
 
             {hasFeedback ? (
